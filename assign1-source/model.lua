@@ -93,23 +93,29 @@ function modPercep(inputs, r)
    -- Assuming y is a 1-dim tensor. Taking regularizer into consideration
    function model:l(x,y)
       -- Remove the following line and add your stuff
-      print("You have to define this function by yourself!");
+      -- print("You have to define this function by yourself!");
+	  -- return (torch.dot(model.w,x) - y[1])^2/2 + r:l(model.w)
+	  return ((g(x)-y[1])*torch.dot(model.w,x)) + r:l(model.w)
    end
    -- Define the gradient function. Taking regularizer into consideration.
    function model:dw(x,y)
       -- Remove the following line and add your stuff
-      print("You have to define this function by yourself!");
+      -- print("You have to define this function by yourself!");
+		return 	-((y[1]-g(x))*x) + r:dw(model.w)
    end
    -- Define the output function. Output is a 1-dim tensor.
    function model:f(x)
       -- Remove the following line and add your stuff
-      print("You have to define this function by yourself!");
+      -- print("You have to define this function by yourself!");
+		return torch.ones(1)*torch.dot(model.w,x)
    end
    -- Define the indicator function, who gives a binary classification
    function model:g(x)
       -- Remove the following line and add your stuff
-      print("You have to define this function by yourself!");
-   end
+      -- print("You have to define this function by yourself!");
+		if model:f(x)[1] >= 0 then return torch.ones(1) end
+      		return -torch.ones(1)
+   		end
    -- Return this model
    return model
 end
