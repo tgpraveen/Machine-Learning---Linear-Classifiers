@@ -95,13 +95,13 @@ function modPercep(inputs, r)
       -- Remove the following line and add your stuff
       -- print("You have to define this function by yourself!");
 	  -- return (torch.dot(model.w,x) - y[1])^2/2 + r:l(model.w)
-	  return ((g(x)-y[1])*torch.dot(model.w,x)) + r:l(model.w)
+	  return ((model:g(x)[1]-y[1])*torch.dot(model.w,x)) + r:l(model.w)
    end
    -- Define the gradient function. Taking regularizer into consideration.
    function model:dw(x,y)
       -- Remove the following line and add your stuff
       -- print("You have to define this function by yourself!");
-		return 	-((y[1]-g(x))*x) + r:dw(model.w)
+		return 	x*(-y[1]+model:g(x)[1]) + r:dw(model.w)
    end
    -- Define the output function. Output is a 1-dim tensor.
    function model:f(x)

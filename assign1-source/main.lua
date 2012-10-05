@@ -25,21 +25,27 @@ function main()
    -- 2. Initialize a linear regression model with l2 regularization (lambda = 0.05)
    print("Initializing a linear regression model with l2 regularization...")
    local model = modLinReg(data_train:features(), regL2(0.05))
+   local model_percep = modPercep(data_train:features(), regL2(0.05))
    
    -- 3. Initialize a batch trainer with constant step size = 0.05
    print("Initializing a batch trainer with constant step size 0.05...")
    local trainer = trainerBatch(model, stepCons(0.05))
+   local trainer_percep_stoch = trainerSGD(model_percep, stepCons(0.05))
    
    -- 4. Perform batch training for 100 steps
    print("Training for 100 batch steps...")
    local loss_train, error_train = trainer:train(data_train, 100)
+   local loss_train_percep, error_train_percep = trainer_percep_stoch:train(data_train, 100)
 
    -- 5. Perform test using the model
    print("Testing...")
    local loss_test, error_test = trainer:test(data_test)
+   local loss_test_percep, error_test_percep = trainer_percep_stoch:test(data_test)
 
    -- 6. Print the result
    print("Training loss = "..loss_train..", error = "..error_train.."; Testing loss = "..loss_test..", error = "..error_test)
+   print("\n")
+   print("For PERCEPTRON: Training loss = "..loss_train_percep..", error = "..error_train_percep.."; Testing loss = "..loss_test_percep..", error = "..error_test_percep)
    
 end
 

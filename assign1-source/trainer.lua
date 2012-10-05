@@ -113,12 +113,43 @@ function trainerSGD(model, step)
    -- Train a module using batch method with max_step size
    function trainer:train(dataset, max_step)
       -- Remove the following line and add your stuff
-      print("You have to define this function by yourself!");
+      -- print("You have to define this function by yourself!");
+	  -- Do this many steps of training
+	 local dw = torch.zeros(model.w:size())	
+     for i = 1,max_step do
+	 -- Compute the batch gradients
+	 -- local dw = torch.zeros(model.w:size())
+	 -- Iterative average
+	 -- for j = 1,dataset:size() do
+	 --  dw = dw*(j-1)/j + model:dw(dataset[j][1], dataset[j][2])/j
+	 dw = dw*(i-1)/i + model:dw(dataset[i][1], dataset[i][2])/i
+	 -- end
+	 -- Take batch gradient step
+	    model.w = model.w - dw*step:eta(i)
+      end
+      -- return the training loss and error
+      return trainer:test(dataset)
    end
    -- Test a module, returning with average loss and error rate
    function trainer:test(dataset)
       -- Remove the following line and add your stuff
-      print("You have to define this function by yourself!");
+      -- Average loss
+      local loss = 0
+      -- Counter for wrong classifications
+      local error = 0
+      -- Iterate over all the datasets
+      for i = 1,dataset:size() do
+	 -- Iterative loss averaging
+	 loss = loss*(i-1)/i + model:l(dataset[i][1], dataset[i][2])/i
+	 -- Iterative error rate computation
+	if torch.sum(torch.ne(model:g(dataset[i][1]), dataset[i][2])) == 0 then
+	    error = error*(i-1)/i
+	 else
+	    error = (error*i-error + 1)/i
+	 end
+      end
+      -- Return the loss and error ratio
+      return loss, error
    end
    -- Return this trainer
    return trainer
