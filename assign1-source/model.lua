@@ -77,7 +77,19 @@ function modLinReg(inputs, r)
    -- error on the training data
    function model:train(dataset)
       -- Remove the following line and add your stuff
-      print("You have to define this function by yourself!");
+      -- print("You have to define this function by yourself!");
+	  --  Andrew Ng's video lecture: Normal Equation.
+		  local W_star = {}
+		  local X = {}
+		  local Y = {}
+		  for i = 1,dataset:size()
+		  	X[i] = dataset[i][1]
+		  	Y[i] = dataset[i][2] 	
+		  end
+		  W_star = torch.mm(torch.mm(torch.inverse(torch.mm(X,torch.transpose(X,1,2))),torch.transpose(X,1,2)),Y)
+		  local error_train = 
+	return 	
+
    end
    -- Return this model
    return model
