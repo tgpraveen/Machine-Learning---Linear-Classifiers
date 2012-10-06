@@ -157,21 +157,26 @@ function modLogReg(inputs, r)
       -- print("You have to define this function by yourself!");
 	  -- return (torch.dot(model.w,x) - y[1])^2/2 + r:l(model.w)
 	  -- return ((model:g(x)[1]-y[1])*torch.dot(model.w,x)) + r:l(model.w)
-		return (2*torch.log(1+torch.exp(-y[1]*(torch.dot(model.w:transpose(1,2),x)))))
+		return 2*torch.log(1+torch.exp(-y[1]*(torch.dot(model.w,x)))) + r:l(model.w)
    end
    -- Define the gradient function. Taking regularizer into consideration.
    function model:dw(x,y)
       -- Remove the following line and add your stuff
       -- print("You have to define this function by yourself!");
 	  -- return 	x*(-y[1]+model:g(x)[1]) + r:dw(model.w)
-	     return (torch.dot(-(y[1]-g(torch.dot(model.w:transpose(1,2),x))),x))
+	  -- print("dw of x: ")
+	  -- print(((model:g(x))))
+	     return (x*((model:g(x)[1]-y[1])) + r:dw(model.w))
    end
    -- Define the output function. Output is a 1-dim tensor.
    function model:f(x)
       -- Remove the following line and add your stuff
       -- print("You have to define this function by yourself!");
 	  -- return torch.ones(1)*torch.dot(model.w,x)
-		 return ((torch.ones(1)*torch.exp(torch.dot(model.w:transpose(1,2),x))-1)/(torch.exp(torch.dot(model.w:transpose(1,2),x))+1))
+	  -- local dot_prod = torch.dot(model.w,x)
+	  -- print("hi")
+	  -- print(x)
+		 return (torch.ones(1)*(((torch.exp(torch.dot(model.w,x)))-1)/(torch.exp(torch.dot(model.w,x))+1)))
    end
    -- Define the indicator function, who gives a binary classification
    function model:g(x)

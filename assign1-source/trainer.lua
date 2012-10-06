@@ -122,6 +122,8 @@ function trainerSGD(model, step)
 	 -- Iterative average
 	 -- for j = 1,dataset:size() do
 	 --  dw = dw*(j-1)/j + model:dw(dataset[j][1], dataset[j][2])/j
+	 -- print("I print")
+	 -- print(dataset[i][1])
 	 dw = dw*(i-1)/i + model:dw(dataset[i][1], dataset[i][2])/i
 	 -- end
 	 -- Take batch gradient step

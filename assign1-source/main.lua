@@ -38,13 +38,13 @@ function main()
    print("Training for 100 batch steps...")
    local loss_train, error_train = trainer:train(data_train, 100)
    local loss_train_percep, error_train_percep = trainer_percep_stoch:train(data_train, 100)
-   local loss_train_log_reg, error_train_log_reg = trainer_percep_stoch:train(data_train, 100)
+   local loss_train_log_reg, error_train_log_reg = trainer_log_reg_stoch:train(data_train, 100)
 
    -- 5. Perform test using the model
    print("Testing...")
    local loss_test, error_test = trainer:test(data_test)
    local loss_test_percep, error_test_percep = trainer_percep_stoch:test(data_test)
-   local loss_test_log_reg, error_test_log_reg = trainer_percep_stoch:test(data_test)
+   local loss_test_log_reg, error_test_log_reg = trainer_log_reg_stoch:test(data_test)
 
    -- 6. Print the result
    print("Training loss = "..loss_train..", error = "..error_train.."; Testing loss = "..loss_test..", error = "..error_test)
@@ -53,7 +53,7 @@ function main()
    print("\n")
    -- print("For DIRECT SOLUTION: Training loss = Training error = "..model:train(data_train))
    print("\n")
-   print("FOR LOGISTIC REGRESSION: Testing loss = "..loss_train_log_reg..", error = "..error_train_log_reg.."; Testing loss = "..loss_test_log_reg..", error = "..error_test_log_reg)
+   print("FOR LOGISTIC REGRESSION: Training loss = "..loss_train_log_reg..", error = "..error_train_log_reg.."; Testing loss = "..loss_test_log_reg..", error = "..error_test_log_reg)
 end
 
 main()
