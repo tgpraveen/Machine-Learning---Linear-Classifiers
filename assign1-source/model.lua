@@ -96,7 +96,7 @@ function modLinReg(inputs, r)
 		  X_T = X:transpose(1,2)
 		  local Z = torch.mm(X_T,X)
 		  -- local Z = torch.mm(X,X:t())	
-		  W_star = torch.mm(torch.mm(torch.inverse(Z),torch.DoubleTensor.transpose(X,1,2)),Y)
+		  W_star = torch.mm(torch.mm(torch.inverse(Z),X:transpose(1,2)),Y)
 		  -- local error_train = 
 	return 	
 
@@ -146,7 +146,42 @@ end
 -- inputs: dimension of inputs; r: a regularizer
 function modLogReg(inputs, r)
    -- Remove the following line and add your stuff
-   print("You have to define this function by yourself!");
+   -- print("You have to define this function by yourself!");
+	local model = {}
+   -- Generate weight vector initialized randomly
+   model.w = torch.rand(inputs)
+   -- Define the loss function. Output is areal number (not 1-dim tensor!)
+   -- Assuming y is a 1-dim tensor. Taking regularizer into consideration
+   function model:l(x,y)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+	  -- return (torch.dot(model.w,x) - y[1])^2/2 + r:l(model.w)
+	  -- return ((model:g(x)[1]-y[1])*torch.dot(model.w,x)) + r:l(model.w)
+		return (2*torch.log(1+torch.exp(-y[1]*(torch.dot(model.w:transpose(1,2),x)))))
+   end
+   -- Define the gradient function. Taking regularizer into consideration.
+   function model:dw(x,y)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+	  -- return 	x*(-y[1]+model:g(x)[1]) + r:dw(model.w)
+	     return (torch.dot(-(y[1]-g(torch.dot(model.w:transpose(1,2),x))),x))
+   end
+   -- Define the output function. Output is a 1-dim tensor.
+   function model:f(x)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+	  -- return torch.ones(1)*torch.dot(model.w,x)
+		 return ((torch.ones(1)*torch.exp(torch.dot(model.w:transpose(1,2),x))-1)/(torch.exp(torch.dot(model.w:transpose(1,2),x))+1))
+   end
+   -- Define the indicator function, who gives a binary classification
+   function model:g(x)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+		if model:f(x)[1] >= 0 then return torch.ones(1) end
+      		return -torch.ones(1)
+   		end
+   -- Return this model
+   return model
 end
 
 -- Multinomial logistic regression module f(x)_k = exp(w_k^T x) / (\sum_j exp(w_j^Tx))

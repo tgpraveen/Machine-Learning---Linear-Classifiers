@@ -53,5 +53,13 @@ end
 -- lambda: the regularization parameter
 function regL1(lambda)
    -- Remove the following line and add your stuff
-   print("You have to define this function by yourself!");
+   -- print("You have to define this function by yourself!");
+	 local regularizer = {}
+   -- The loss value of this regularizer
+   function regularizer:l(w) return torch.sum(torch.pow(w,1))*lambda end
+   -- The gradient of l with respect to w
+   function regularizer:dw(w) return lambda end
+   -- Return this regularizer
+   return regularizer
+	
 end
