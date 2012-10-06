@@ -46,6 +46,8 @@ function main()
    print("Training loss = "..loss_train..", error = "..error_train.."; Testing loss = "..loss_test..", error = "..error_test)
    print("\n")
    print("For PERCEPTRON: Training loss = "..loss_train_percep..", error = "..error_train_percep.."; Testing loss = "..loss_test_percep..", error = "..error_test_percep)
+   print("\n")
+   print("For DIRECT SOLUTION: Training loss = Training error = "..model:train(data_train))
    
 end
 

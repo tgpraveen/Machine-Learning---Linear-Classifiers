@@ -80,14 +80,24 @@ function modLinReg(inputs, r)
       -- print("You have to define this function by yourself!");
 	  --  Andrew Ng's video lecture: Normal Equation.
 		  local W_star = {}
-		  local X = {}
-		  local Y = {}
-		  for i = 1,dataset:size()
-		  	X[i] = dataset[i][1]
-		  	Y[i] = dataset[i][2] 	
+		  local X = torch.zeros(dataset:size(),dataset:features())
+		  local Y = torch.zeros(dataset:size())
+		  -- local test = {1}
+		  for i = 1,dataset:size() do
+			for j = 1,dataset:features() do				
+	--			print(dataset[1][1][1])
+--				print("i "..i.." j "..j)
+		  		X[i][j] = dataset[i][1][j]
+		  		Y[i] = dataset[i][2][1]
+			end 	
 		  end
-		  W_star = torch.mm(torch.mm(torch.inverse(torch.mm(X,torch.transpose(X,1,2))),torch.transpose(X,1,2)),Y)
-		  local error_train = 
+		  print("Hi\n")
+		  print(X[1])
+		  X_T = X:transpose(1,2)
+		  local Z = torch.mm(X_T,X)
+		  -- local Z = torch.mm(X,X:t())	
+		  W_star = torch.mm(torch.mm(torch.inverse(Z),torch.DoubleTensor.transpose(X,1,2)),Y)
+		  -- local error_train = 
 	return 	
 
    end
