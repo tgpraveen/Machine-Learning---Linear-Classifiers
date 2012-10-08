@@ -126,6 +126,8 @@ function trainerSGD(model, step)
 	 -- print(dataset[i][1])
      if (i>dataset:size()) then break end
 	 dw = dw*(i-1)/i + model:dw(dataset[i][1], dataset[i][2])/i
+     local loss = loss*(i-1)/i + model:l(dataset[i][1], dataset[i][2])/i -- Calulating loss to check for convergence/divergence.
+     print ("At "..i.."\tloss is: "loss)
 	 -- end
 	 -- Take batch gradient step
 	    model.w = model.w - dw*step:eta(i)

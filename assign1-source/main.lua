@@ -20,7 +20,7 @@ function main()
 	
    -- 1. Load spambase dataset
    print("Initializing datasets...")
-   local data_train, data_test = spambase:getDatasets(3000,1000)
+   local data_train, data_test = spambase:getDatasets(1000,1000)
 
    -- 2. Initialize a linear regression model with l2 regularization (lambda = 0.05)
    print("Initializing a linear regression model with l2 regularization...")
