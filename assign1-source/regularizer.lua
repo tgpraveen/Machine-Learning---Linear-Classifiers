@@ -58,7 +58,7 @@ function regL1(lambda)
    -- The loss value of this regularizer
    function regularizer:l(w) return torch.sum(w)*lambda end
    -- The gradient of l with respect to w
-   function regularizer:dw(w) return (torch.ones(dataset:features())*lambda) end
+   function regularizer:dw(w) return (torch.ones(w:size())*lambda) end
    -- Return this regularizer
    return regularizer
 	

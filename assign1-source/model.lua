@@ -79,30 +79,51 @@ function modLinReg(inputs, r)
       -- Remove the following line and add your stuff
       -- print("You have to define this function by yourself!");
 	  --  Andrew Ng's video lecture: Normal Equation.
-		  local W_star = {}
-		  local X = torch.zeros(dataset:size(),dataset:features())
-		  local Y = torch.zeros(dataset:size())
+	  --  local W_star = {}
+	  --  local X = torch.zeros(dataset:size(),dataset:features())
+	  --  local Y = torch.zeros(dataset:size(),1)
 		  -- local test = {1}
-		  for i = 1,dataset:size() do
-			for j = 1,dataset:features() do				
+		--  for i = 1,dataset:size() do
+	  -- for j = 1,dataset:features() do				
 	--			print(dataset[1][1][1])
 --				print("i "..i.." j "..j)
-		  		X[i][j] = dataset[i][1][j]
-		  		Y[i] = dataset[i][2][1]
-			end 	
-		  end
-		  print("Hi\n")
-		  print(X[1])
-		  X_T = X:transpose(1,2)
-		  local Z = torch.mm(X_T,X)
-		  -- local Z = torch.mm(X,X:t())	
-		  W_star = torch.mm(torch.mm(torch.inverse(Z),X:transpose(1,2)),Y)
-		  -- local error_train = 
-	return 	
+		 -- 		X[i][j] = dataset[i][1][j]
+		  	--	Y[i] = dataset[i][2][1]
+		--	end 	
+		 -- end
+		--  print("Hi\n")
+		  -- print(X[1])
 
+		  -- X_T = X:transpose(1,2)
+		  -- local A_side = torch.mm(X_T,X)
+		  -- local Z = torch.mm(X,X:t())
+		  -- Inverse method:
+		     -- local A_side_inverse = torch.inverse(A_side)
+		     -- W_star = torch.mm(torch.mm(A_side_inverse,X:transpose(1,2)),Y)
+		  -- Try to solve using AX=B torch.gesv()
+		  -- local B_side = torch.mm(X_T,Y)
+		  -- W_star = torch.gesv(A_side, B_side)
+		  -- local error_train = 
+	--return 	
+
+   --end
+   -- Return this model
+   --return model
+	  local s = dataset:size()
+      local feature_matrix = torch.Tensor(s,dataset:features())
+      local target_vector = torch.Tensor(s,1)
+      for i = 1,s do
+        feature_matrix[i] = dataset[i][1]
+        target_vector[i] = dataset[i][2]
+      end
+      local trans = feature_matrix:t()
+      local xtx = torch.mm(trans,feature_matrix)
+      local inv = torch.inverse(xtx)
+      model.w = torch.mm(torch.mm(inv,trans),target_vector)
    end
    -- Return this model
    return model
+
 end
 
 -- Perceotron module: f(x) = w^T x
@@ -193,5 +214,46 @@ end
 -- inputs: dimension of inputs; classes: number of classes; r: a regularizer
 function modMulLogReg(inputs, classes, r)
    -- Remove the following line and add your stuff
-   print("You have to define this function by yourself!");
+   -- print("You have to define this function by yourself!");
+	  local model = {}
+   -- Generate weight vector initialized randomly
+   model.w = torch.rand(inputs)
+   -- Define the loss function. Output is areal number (not 1-dim tensor!)
+   -- Assuming y is a 1-dim tensor. Taking regularizer into consideration
+   function model:l(x,y)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+	  -- return (torch.dot(model.w,x) - y[1])^2/2 + r:l(model.w)
+	  -- return ((model:g(x)[1]-y[1])*torch.dot(model.w,x)) + r:l(model.w)
+		 local W_allclass = torch.zeros(torch.zeros(classes))
+		return 2*torch.log(1+torch.exp(-y[1]*(torch.dot(model.w,x)))) + r:l(model.w)
+   end
+   -- Define the gradient function. Taking regularizer into consideration.
+   function model:dw(x,y)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+	  -- return 	x*(-y[1]+model:g(x)[1]) + r:dw(model.w)
+	  -- print("dw of x: ")
+	  -- print(((model:g(x))))
+	     return (x*((model:g(x)[1]-y[1])) + r:dw(model.w))
+   end
+   -- Define the output function. Output is a 1-dim tensor.
+   function model:f(x)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+	  -- return torch.ones(1)*torch.dot(model.w,x)
+	  -- local dot_prod = torch.dot(model.w,x)
+	  -- print("hi")
+	  -- print(x)
+		 return (torch.ones(1)*(((torch.exp(torch.dot(model.w,x)))-1)/(torch.exp(torch.dot(model.w,x))+1)))
+   end
+   -- Define the indicator function, who gives a binary classification
+   function model:g(x)
+      -- Remove the following line and add your stuff
+      -- print("You have to define this function by yourself!");
+		if model:f(x)[1] >= 0 then return torch.ones(1) end
+      		return -torch.ones(1)
+   		end
+   -- Return this model
+   return model
 end

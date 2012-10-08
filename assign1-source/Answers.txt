@@ -1,0 +1,107 @@
+QUESTIONS:
+
+1 - Implement:
+  a. - The perceptron learning algorithm
+	   For PERCEPTRON: Training loss = 7.1637486599753, error = 0.191; Testing loss = 7.2037182760096, error = 0.165
+
+  b. - Linear regression with square loss trained with direction solution and 
+       stochastic gradient descent
+	   
+       DIRECT SOLUTION: 
+
+	   Stochastic Gradient Descent: 
+
+  c. - The Logistic regression algorithm trained with stochastic gradient
+       descent
+  d. - The multinomial Logistic regression algorithm trained with stochastic
+       gradient descent
+
+  ==> Include your code as attachment of an email to the TA.
+
+2 - Experiments with the Spambase dataset
+     - Set the training set size to 1000 and the test set to 1000.
+     - Use the (ridge) l2 regularization
+     - The stochastic gradient method for linear regression and logistic
+       regression requires you to find good values for the learning rate
+       (the step size eta using stepCons)
+  a. - What learning rate will cause linear regression and logistic regression
+       to diverge?
+  b. - What learnin rate for linear regression and logistic regression that
+       produces the fastest convergence?
+  c. - Implement a stopping criterion that detects convergence.
+  d. - Train logistic regression with 10, 30, 100, 500, 1000 and 3000 trianing
+       samples, and 1000 test samples. For each size of the training set,
+       provide:
+       - The final value of the average loss, and the classification errors on
+         the training set and the test set
+       - The value of the learning rate used
+       - The number of iterations performed
+  e. - What is the asymptotic value of the training/test error for very large
+       training sets?
+
+3. - L2 and L1 regularization
+     When the training set is small, it is often helpful to add a
+     regularization term to the loss function. The most popular ones are:
+     L2 Norm: lambda*||W||^2 (aka "Ridge")
+     L1 Norm: lambda*[\sum_{i} |W_i|] (aka "LASSO")
+  a. - How is the linear regression with direct solution modified by the
+       addition of an L2 regularizer?
+  b. - Implement the L1 regularizer. Experiment with your logistic regression
+       code with the L2 and L1 regularizers. Can you improve the performance on
+       the test set for training set sizes of 10, 30 and 100? What value of
+       lambda gives the best results?
+ ANSWER: 
+
+For LOGISTIC REGRESSION:
+
+For training set size 10:
+Lambda = 0.03
+	l2 reg: Training loss = 0.70409910052754, error = 0; Testing loss = 11.551727932773, error = 0.393
+	l1 reg: Training loss = 0.97635904674392, error = 0; Testing loss = 17.207432287684, error = 0.398
+Lambda = 0.05
+	l2 reg: Training loss = 1.1378042893368, error = 0; Testing loss = 17.370828612985, error = 0.305
+	l1 reg: Training loss = 1.5512243611654, error = 0; Testing loss = 12.456012440083, error = 0.396
+Lambda = 0.07
+	l2 reg: Training loss = 1.4355104508443, error = 0; Testing loss = 24.274573882386, error = 0.392
+	l1 reg: Training loss = 2.3993895847476, error = 0.1; Testing loss = 20.42464366037, error = 0.424
+Lambda = 0.09
+	l2 reg: Training loss = 1.8955248266468, error = 0; Testing loss = 13.065804724883, error = 0.344
+	l1 reg: Training loss = 2.8911038407556, error = 0; Testing loss = 17.503997356674, error = 0.349
+
+For training set size 30:
+Lambda = 0.03
+	l2 reg: Training loss = 1.30310509042, error = 0.066666666666667; Testing loss = 14.986124931949, error = 0.334
+	l1 reg: Training loss = 1.2655169724744, error = 0.1; Testing loss = 13.369678029342, error = 0.258
+Lambda = 0.05
+	l2 reg: Training loss = 1.4333043233448, error = 0.1; Testing loss = 16.817180342136, error = 0.369
+	l1 reg: Training loss = 2.0738462532878, error = 0.1; Testing loss = 12.106682965486, error = 0.351
+Lambda = 0.07
+	l2 reg: Training loss = 1.7324295998115, error = 0.1; Testing loss = 12.823186325126, error = 0.304
+	l1 reg: Training loss = 2.2411218017041, error = 0.1; Testing loss = 15.633740190863, error = 0.321
+Lambda = 0.09
+	l2 reg: Training loss = 2.0925329886924, error = 0.1; Testing loss = 12.455692123079, error = 0.345
+	l1 reg: Training loss = 3.0258982229099, error = 0.066666666666667; Testing loss = 12.130551221741, error = 0.344
+
+For training set size 100:
+Lambda = 0.03
+	l2 reg: Training loss = 1.4462434680174, error = 0.11; Testing loss = 3.537803720041, error = 0.15
+	l1 reg: Training loss = 1.3287434174105, error = 0.15; Testing loss = 3.1388047670939, error = 0.163
+Lambda = 0.05
+	l2 reg: Training loss = 1.3166491858152, error = 0.13; Testing loss = 3.2620797466237, error = 0.151
+	l1 reg: Training loss = 1.3008585898619, error = 0.1; Testing loss = 3.2024011997136, error = 0.158
+Lambda = 0.07
+	l2 reg: Training loss = 1.553005288386, error = 0.09; Testing loss = 3.0505442189142, error = 0.16
+	l1 reg: Training loss = 1.0612471682402, error = 0.16; Testing loss = 2.6408889338515, error = 0.193
+Lambda = 0.09
+	l2 reg: Training loss = 1.3890063587835, error = 0.12; Testing loss = 2.5589154658126, error = 0.155
+	l1 reg: Training loss = 0.60347011055328, error = 0.1; Testing loss = 3.255872152184, error = 0.186
+
+
+4. - Multinomial logistic regression
+     Implement the multinomial logistic regression as a model. Your can
+     experiment with larger datasets if your machine has enough memory. In this
+     part we experiment on the MNIST dataset.
+  a. - Testing your model with training sets of size 100, 500, 1000, and 6000,
+       with a testing set of size 1000. What are the error rates on the
+       training and testing datasets?
+  b. - Use both L2 and L1 regularization. Do they make some difference?

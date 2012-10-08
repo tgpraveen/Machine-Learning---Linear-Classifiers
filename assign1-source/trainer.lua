@@ -124,6 +124,7 @@ function trainerSGD(model, step)
 	 --  dw = dw*(j-1)/j + model:dw(dataset[j][1], dataset[j][2])/j
 	 -- print("I print")
 	 -- print(dataset[i][1])
+     if (i>dataset:size()) then break end
 	 dw = dw*(i-1)/i + model:dw(dataset[i][1], dataset[i][2])/i
 	 -- end
 	 -- Take batch gradient step
