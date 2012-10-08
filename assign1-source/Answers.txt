@@ -26,9 +26,37 @@ QUESTIONS:
        (the step size eta using stepCons)
   a. - What learning rate will cause linear regression and logistic regression
        to diverge?
+
   b. - What learnin rate for linear regression and logistic regression that
        produces the fastest convergence?
+
+
   c. - Implement a stopping criterion that detects convergence.
+ANSWER:
+
+ (Actual implementation is found in trainer.lua)
+
+-- Code for stopping criteria. Let it run for 20 iterations at least. Then compare with last 10 iterations to see if loss has not changed much.
+     local can_be_stopped = true
+     prev_losses[i]=loss2
+
+     if (i>10) then
+		 for j=i-9,i do
+		 	if (torch.abs(prev_losses[j]-prev_losses[j-1])<0.005) then
+		 		local does_nothing=true
+		 	else can_be_stopped=false
+		 	end
+		 end
+     end
+     
+	 if i>10 then
+		 if (can_be_stopped==true) then
+		 print("Convergence detected, so stopping, after "..i.." iterations performed.")
+		 break 
+		 end
+     end
+
+
   d. - Train logistic regression with 10, 30, 100, 500, 1000 and 3000 trianing
        samples, and 1000 test samples. For each size of the training set,
        provide:
@@ -36,8 +64,81 @@ QUESTIONS:
          the training set and the test set
        - The value of the learning rate used
        - The number of iterations performed
+ANSWER:
+
+      If we keep all Lambda = 0.05, then
+
+Testing all against SAME Test Set......
+
+10 max_steps Logistic regression convergence testing:  -- NO CONVERGENCE
+------------------------------
+
+30 max_steps Logistic regression convergence testing:  -- NO CONVERGENCE
+------------------------------
+
+100 max_steps Logistic regression convergence testing: -- NO CONVERGENCE
+------------------------------
+
+500 max_steps Logistic regression convergence testing:
+Convergence detected, so stopping, after 227 iterations performed.
+------------------------------
+
+1000 max_steps Logistic regression convergence testing:
+Convergence detected, so stopping, after 227 iterations performed.
+------------------------------
+
+3000 steps Logistic regression convergence testing:
+Convergence detected, so stopping, after 227 iterations performed.
+------------------------------
+
+10 FOR LOGISTIC REGRESSION with l2 reg: Training loss = 3.087106673221, error = 0.1; Testing loss = inf, error = 0.454
+30 FOR LOGISTIC REGRESSION with l2 reg: Training loss = 2.3146480299949, error = 0.26666666666667; Testing loss = 21.379858833164, error = 0.42
+100 FOR LOGISTIC REGRESSION with l2 reg: Training loss = 1.3836411232497, error = 0.13; Testing loss = 15.266060181732, error = 0.34
+500 FOR LOGISTIC REGRESSION with l2 reg: Training loss = 2.2738270573943, error = 0.238; Testing loss = 9.449262113937, error = 0.296
+1000 FOR LOGISTIC REGRESSION with l2 reg: Training loss = 3.0208927811382, error = 0.249; Testing loss = 9.3931810715075, error = 0.259
+3000 FOR LOGISTIC REGRESSION with l2 reg: Training loss = 3.1058976649686, error = 0.227; Testing loss = 10.026898746481, error = 0.264
+
+      So now we will use different different lambdas for different max_steps (no. of iterations)
+
+For 10 samples:
+   FOR LOGISTIC REGRESSION with l2 reg: Training loss = 2.8347902814814, error = 0.1; Testing loss = 10.246736493107, error = 0.397
+   Learning rate:0.0000001 - 0.1
+   Number of iterations:NO CONVERGENCE For any Lambda.
+
+For 30 samples:
+   FOR LOGISTIC REGRESSION with l2 reg: Training loss = 8.2057731060219, error = 0.2; Testing loss = 15.437865853392, error = 0.426
+   Learning rate:0.0000001 - 0.1
+   Number of iterations:NO CONVERGENCE For any Lambda.
+
+For 100 samples:
+   FOR LOGISTIC REGRESSION with l2 reg: Training loss = 9.1528290811417, error = 0.13; Testing loss = 12.304956364362, error = 0.178
+   Learning rate:0.0000001 - 0.1
+   Number of iterations: NO CONVERGENCE For any Lambda.
+
+For 500 samples:
+   FOR LOGISTIC REGRESSION with l2 reg: Training loss = 2.6992460737131, error = 0.194; Testing loss = 2.9414021066646, error = 0.153
+   Learning rate:0.05
+   Number of iterations:Convergence detected, so stopping, after 463 iterations performed.
+
+For 1000 samples:
+   FOR LOGISTIC REGRESSION with l2 reg: Training loss = 1.6921011590229, error = 0.11; Testing loss = 2.2107017685683, error = 0.129
+   Learning rate:0.03
+   Number of iterations:Convergence detected, so stopping, after 327 iterations performed.
+
+For 3000 samples:
+   FOR LOGISTIC REGRESSION with l2 reg: Training loss = 1.5286116898631, error = 0.13666666666667; Testing loss = 2.0640244582992, error = 0.185
+   Learning rate:0.01
+   Number of iterations:Convergence detected, so stopping, after 350 iterations performed.
+
+	**Observations:
+		1. It seems very hard to get convergence on 10, 30, 100 training sample size experiments.
+		2. No. of iterations to converge 1000 seems to be lesser than 500 as well as 3000 training sample size experiments.
+
+
   e. - What is the asymptotic value of the training/test error for very large
        training sets?
+	
+
 
 3. - L2 and L1 regularization
      When the training set is small, it is often helpful to add a
@@ -46,10 +147,7 @@ QUESTIONS:
      L1 Norm: lambda*[\sum_{i} |W_i|] (aka "LASSO")
   a. - How is the linear regression with direct solution modified by the
        addition of an L2 regularizer?
-  b. - Implement the L1 regularizer. Experiment with your logistic regression
-       code with the L2 and L1 regularizers. Can you improve the performance on
-       the test set for training set sizes of 10, 30 and 100? What value of
-       lambda gives the best results?
+
  ANSWER:
  
 3.a
@@ -64,6 +162,13 @@ In our direct solution: we use trainer:test() to calculate our loss and error. A
 loss and model:g() to calculate error. And, model:l() has a regularization term whereas model:g() does not have a regularization term. So, while using l2 and l1 
 regularizers, we get different different losses but the same errors.
 
+
+b. - Implement the L1 regularizer. Experiment with your logistic regression
+       code with the L2 and L1 regularizers. Can you improve the performance on
+       the test set for training set sizes of 10, 30 and 100? What value of
+       lambda gives the best results?
+
+ ANSWER:
 
 3.b
 

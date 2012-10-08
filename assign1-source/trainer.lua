@@ -116,6 +116,8 @@ function trainerSGD(model, step)
       -- print("You have to define this function by yourself!");
 	  -- Do this many steps of training
 	 local dw = torch.zeros(model.w:size())	
+     local loss2 = 0
+     local prev_losses = {}
      for i = 1,max_step do
 	 -- Compute the batch gradients
 	 -- local dw = torch.zeros(model.w:size())
@@ -126,10 +128,34 @@ function trainerSGD(model, step)
 	 -- print(dataset[i][1])
      if (i>dataset:size()) then break end
 	 dw = dw*(i-1)/i + model:dw(dataset[i][1], dataset[i][2])/i
-     local loss = loss*(i-1)/i + model:l(dataset[i][1], dataset[i][2])/i -- Calulating loss to check for convergence/divergence.
-     print ("At "..i.."\tloss is: "loss)
+     -- Calulating loss to check for convergence/divergence.
+     loss2 = loss2*(i-1)/i + model:l(dataset[i][1], dataset[i][2])/i
+     -- print ("At "..i.."\tloss is: "..loss2)
+     
+     -- Code for stopping criteria. Let it run for 20 iterations at least. Then compare with last 10 iterations to see if loss has not changed much.
+     local can_be_stopped = true
+     prev_losses[i]=loss2
+
+     if (i>10) then
+		 for j=i-9,i do
+		 	if (torch.abs(prev_losses[j]-prev_losses[j-1])<0.005) then
+		 		local does_nothing=true
+		 	else can_be_stopped=false
+		 	end
+		 end
+     end
+     
+	 if i>10 then
+		 if (can_be_stopped==true) then
+		 print("Convergence detected, so stopping, after "..i.." iterations performed.")
+		 break 
+		 end
+     end
+
+     
+
 	 -- end
-	 -- Take batch gradient step
+	 -- Take stochastic gradient step
 	    model.w = model.w - dw*step:eta(i)
       end
       -- return the training loss and error
