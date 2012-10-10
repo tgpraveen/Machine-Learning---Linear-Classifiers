@@ -131,20 +131,20 @@ end
 function modPercep(inputs, r)
    local model = {}
    -- Generate weight vector initialized randomly
-   model.w = torch.rand(inputs)
+   model.w = torch.zeros(inputs)
    -- Define the loss function. Output is areal number (not 1-dim tensor!)
    -- Assuming y is a 1-dim tensor. Taking regularizer into consideration
    function model:l(x,y)
       -- Remove the following line and add your stuff
       -- print("You have to define this function by yourself!");
 	  -- return (torch.dot(model.w,x) - y[1])^2/2 + r:l(model.w)
-	  return ((model:g(x)[1]-y[1])*torch.dot(model.w,x)) + r:l(model.w)
+	  return ((model:g(x)[1]-y[1])*torch.dot(model.w,x)) --+ r:l(model.w)
    end
    -- Define the gradient function. Taking regularizer into consideration.
    function model:dw(x,y)
       -- Remove the following line and add your stuff
       -- print("You have to define this function by yourself!");
-		return 	x*(-y[1]+model:g(x)[1]) + r:dw(model.w)
+		return 	x*(-y[1]+ model:g(x)[1]) --+ r:dw(model.w)
    end
    -- Define the output function. Output is a 1-dim tensor.
    function model:f(x)
@@ -215,45 +215,59 @@ end
 function modMulLogReg(inputs, classes, r)
    -- Remove the following line and add your stuff
    -- print("You have to define this function by yourself!");
-	  local model = {}
-   -- Generate weight vector initialized randomly
-   model.w = torch.rand(inputs)
-   -- Define the loss function. Output is areal number (not 1-dim tensor!)
+	 local model = {}
+   -- Generate a weight vector initialized randomly
+   model.w = torch.rand(classes, inputs) 
+   -- Define the loss function. Output is a real number (not     1-dim tensor!).
    -- Assuming y is a 1-dim tensor. Taking regularizer into consideration
    function model:l(x,y)
-      -- Remove the following line and add your stuff
-      -- print("You have to define this function by yourself!");
-	  -- return (torch.dot(model.w,x) - y[1])^2/2 + r:l(model.w)
-	  -- return ((model:g(x)[1]-y[1])*torch.dot(model.w,x)) + r:l(model.w)
-		 local W_allclass = torch.zeros(torch.zeros(classes))
-		return 2*torch.log(1+torch.exp(-y[1]*(torch.dot(model.w,x)))) + r:l(model.w)
+      a = 0
+      b = y[1]
+      for i = 1, classes do
+      a = a + torch.exp(torch.dot(model.w[i],x)) 
+      end   
+      return (torch.log(a/(torch.exp(torch.dot(model.w[b],x))))) + r:l(model.w)
    end
    -- Define the gradient function. Taking regularizer into consideration.
    function model:dw(x,y)
-      -- Remove the following line and add your stuff
-      -- print("You have to define this function by yourself!");
-	  -- return 	x*(-y[1]+model:g(x)[1]) + r:dw(model.w)
-	  -- print("dw of x: ")
-	  -- print(((model:g(x))))
-	     return (x*((model:g(x)[1]-y[1])) + r:dw(model.w))
+      a = 0
+      b = y[1]
+      for i = 1, classes do
+      a = a + torch.exp(torch.dot(model.w[i],x)) 
+      end 
+      m = torch.exp(torch.dot(model.w[b],x))
+      lw = torch.zeros(model.w:size())
+      for i = 1, classes do
+        if i == b then lw[i] = x*(m/a-1) else lw[i] = x*(m/a) end
+      end
+      return (lw + r:dw(model.w))
    end
    -- Define the output function. Output is a 1-dim tensor.
    function model:f(x)
-      -- Remove the following line and add your stuff
-      -- print("You have to define this function by yourself!");
-	  -- return torch.ones(1)*torch.dot(model.w,x)
-	  -- local dot_prod = torch.dot(model.w,x)
-	  -- print("hi")
-	  -- print(x)
-		 return (torch.ones(1)*(((torch.exp(torch.dot(model.w,x)))-1)/(torch.exp(torch.dot(model.w,x))+1)))
+      v = torch.ones(classes)  
+      a = 0     
+      for i = 1, classes do
+         a = a + torch.exp(torch.dot(model.w[i],x))
+      end
+      for i = 1, classes do
+           v[i] = (torch.exp(torch.dot(model.w[i],x)))/a
+      end
+      return v
+
    end
    -- Define the indicator function, who gives a binary classification
    function model:g(x)
-      -- Remove the following line and add your stuff
-      -- print("You have to define this function by yourself!");
-		if model:f(x)[1] >= 0 then return torch.ones(1) end
-      		return -torch.ones(1)
-   		end
+      max = 0 
+      index = 1 
+      v = model:f(x)
+      for i = 1, classes do
+          if v[i] >= max then 
+          max = v[i]
+          index =i 
+          end    
+      end
+      return torch.ones(1)*index
+   end
    -- Return this model
    return model
 end

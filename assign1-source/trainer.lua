@@ -128,6 +128,7 @@ function trainerSGD(model, step)
 	 -- print(dataset[i][1])
      if (i>dataset:size()) then break end
 	 dw = dw*(i-1)/i + model:dw(dataset[i][1], dataset[i][2])/i
+--[[ CODE IN THIS BLOCK FOR CHECKING CONVERGENCE QUESTION:
      -- Calulating loss to check for convergence/divergence.
      loss2 = loss2*(i-1)/i + model:l(dataset[i][1], dataset[i][2])/i
      -- print ("At "..i.."\tloss is: "..loss2)
@@ -147,13 +148,11 @@ function trainerSGD(model, step)
      
 	 if i>10 then
 		 if (can_be_stopped==true) then
-		 print("Convergence detected, so stopping, after "..i.." iterations performed.")
+		-- print("Convergence detected, so stopping, after "..i.." iterations performed.")
 		 break 
 		 end
      end
-
-     
-
+--]]
 	 -- end
 	 -- Take stochastic gradient step
 	    model.w = model.w - dw*step:eta(i)

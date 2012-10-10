@@ -19,21 +19,27 @@ QUESTIONS:
   ==> Include your code as attachment of an email to the TA.
 
 2 - Experiments with the Spambase dataset
-     - Set the training set size to 1000 and the test set to 1000.
+     - Set the training set size to 1000 and the 				test set to 1000.
      - Use the (ridge) l2 regularization
      - The stochastic gradient method for linear regression and logistic
        regression requires you to find good values for the learning rate
        (the step size eta using stepCons)
   a. - What learning rate will cause linear regression and logistic regression
        to diverge?
+ANSWER:
+2.a. Learning rate causing linear regression to diverge:
+     Learning rate causing logistic regression to diverge:
 
   b. - What learnin rate for linear regression and logistic regression that
        produces the fastest convergence?
-
+ANSWER:
+2.b.
+	 Learning rate causing linear regression for fastest convergence:
+     Learning rate causing logistic regression for fastest convergence:
 
   c. - Implement a stopping criterion that detects convergence.
 ANSWER:
-
+2.c.
  (Actual implementation is found in trainer.lua)
 
 -- Code for stopping criteria. Let it run for 20 iterations at least. Then compare with last 10 iterations to see if loss has not changed much.
@@ -65,8 +71,8 @@ ANSWER:
        - The value of the learning rate used
        - The number of iterations performed
 ANSWER:
-
-      If we keep all Lambda = 0.05, then
+2.d.
+      let us first try the case where we keep all Lambda = 0.05, then
 
 Testing all against SAME Test Set......
 
@@ -137,7 +143,8 @@ For 3000 samples:
 
   e. - What is the asymptotic value of the training/test error for very large
        training sets?
-	
+	When using no. of training sets as 3000
+    FOR LOGISTIC REGRESSION with l2 reg: Training loss = 2.6176745240151, error = 0.14066666666667; Testing loss = 2.5657795621824, error = 0.151
 
 
 3. - L2 and L1 regularization
@@ -228,3 +235,5 @@ Lambda = 0.09
        with a testing set of size 1000. What are the error rates on the
        training and testing datasets?
   b. - Use both L2 and L1 regularization. Do they make some difference?
+ANSWER:
+
